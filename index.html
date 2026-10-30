@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Elderwise · Virtual interaction companion</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; color: #e9f3f0; background: #101b21; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    main { max-width: 1080px; margin: auto; padding: 40px 24px; }
+    .eyebrow { color: #8edbc5; font-size: .78rem; letter-spacing: .13em; text-transform: uppercase; }
+    h1 { font-size: clamp(2rem,5vw,3.5rem); line-height: 1.08; margin: 16px 0; max-width: 760px; }
+    p { line-height: 1.65; color: #b9cbc8; }
+    a { color: #93e6d0; text-underline-offset: 4px; }
+    .notice { border-left: 3px solid #8edbc5; padding: 12px 18px; background: #182a31; margin: 28px 0; }
+    .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+    .panel { background: #17272e; border: 1px solid #2c444a; border-radius: 24px; padding: 28px; }
+    .stage { min-height: 340px; display: grid; place-items: center; position: relative; overflow: hidden; background: radial-gradient(ellipse at 50% 60%,#274b50,transparent 70%); }
+    .robot { position: relative; width: 210px; height: 235px; }
+    .head { width: 210px; height: 144px; background: #e5ede9; border-radius: 64px 64px 52px 52px; position: absolute; top: 28px; box-shadow: inset 0 -10px 0 #bfceca,0 18px 38px #0003; transform-origin: 50% 95%; transition: transform .35s; }
+    .face { position: absolute; inset: 28px 23px 34px; background: #173039; border-radius: 45px; display: flex; align-items: center; justify-content: space-evenly; }
+    .eye { width: 17px; height: 28px; border-radius: 12px; background: #8ff7d5; box-shadow: 0 0 16px #8ff7d54d; }
+    .antenna { width: 5px; height: 35px; background: #9aafa9; position: absolute; top: -26px; left: 103px; }
+    .antenna::before { content: ''; position: absolute; top: -8px; left: -6px; width: 17px; height: 17px; border-radius: 50%; background: #8edbc5; }
+    .neck { position: absolute; width: 48px; height: 50px; background: #91aaa4; top: 158px; left: 81px; }
+    .base { position: absolute; width: 146px; height: 43px; border-radius: 60% 60% 20px 20px; background: #d0dfd9; bottom: 0; left: 32px; box-shadow: 0 15px 24px #0004; }
+    .mouth { position: absolute; width: 30px; height: 4px; background: #36594e; border-radius: 9px; bottom: 20px; left: 90px; }
+    [data-state="idle"] .head { animation: breathe 4s ease-in-out infinite; }
+    [data-state="listening"] .head { transform: rotate(-9deg); }
+    [data-state="listening"] .antenna::before { animation: pulse 1s ease-in-out infinite; background: #77caff; }
+    [data-state="thinking"] .head { animation: ponder 2s ease-in-out infinite; }
+    [data-state="thinking"] .eye { height: 11px; background: #ffcf87; }
+    [data-state="speaking"] .head { animation: nod .8s ease-in-out infinite; }
+    [data-state="speaking"] .mouth { animation: talk .35s ease-in-out infinite alternate; }
+    @keyframes breathe { 50% { transform: translateY(-5px); } }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 10px #77caff22; } }
+    @keyframes ponder { 50% { transform: rotate(8deg) translateY(-3px); } }
+    @keyframes nod { 50% { transform: translateY(5px) rotate(2deg); } }
+    @keyframes talk { to { height: 12px; bottom: 16px; } }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin: 18px 0; }
+    button { font: inherit; color: #e9f3f0; background: #243e47; border: 1px solid #4a686e; border-radius: 10px; padding: 11px 14px; cursor: pointer; }
+    button:hover { background: #34545d; }
+    button[aria-pressed="true"] { background: #9ae5cf; color: #102c25; border-color: #9ae5cf; }
+    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid #ffd18c; outline-offset: 4px; }
+    button:disabled { opacity: .55; cursor: default; }
+    .primary { background: #9ae5cf; color: #102c25; font-weight: 650; }
+    h2 { margin: 0 0 12px; font-size: 1.5rem; }
+    .state { display: inline-block; border: 1px solid #4a686e; border-radius: 30px; padding: 6px 13px; color: #a8e9d7; }
+    .script { min-height: 156px; margin-top: 24px; }
+    .script p { font-size: 1.15rem; color: #e9f3f0; }
+    .fine { font-size: .86rem; }
+    label { display: inline-flex; align-items: center; gap: 8px; color: #b9cbc8; }
+    footer { margin-top: 28px; }
+    .reduce-motion *, .reduce-motion *::before { animation: none !important; transition: none !important; }
+    @media (prefers-reduced-motion: reduce) { *, *::before { animation: none !important; transition: none !important; } }
+    @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } main { padding: 28px 16px; } .panel { padding: 22px; } .stage { min-height: 300px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="eyebrow">Elderwise / public interaction companion</div>
+    <h1>A little presence.<br>A clearer conversation.</h1>
+    <p>Explore the visual states behind a virtual assessment companion.</p>
+    <p class="notice"><strong>Original schematic robot illustration.</strong> This runnable companion illustrates interaction cues for the Reachy Mini concept. It uses no Reachy Mini assets or SDK. All conversation is scripted. No microphone, audio, AI or search services run here.</p>
+    <div class="layout">
+      <section class="panel" aria-label="Robot animation">
+        <div class="stage">
+          <div class="robot" id="robot" data-state="idle" role="img" aria-label="Schematic robot: idle">
+            <div class="neck"></div><div class="base"></div>
+            <div class="head"><div class="antenna"></div><div class="face"><div class="eye"></div><div class="eye"></div></div><div class="mouth"></div></div>
+          </div>
+        </div>
+        <div class="controls" aria-label="Choose an interaction state">
+          <button type="button" data-mode="idle" aria-pressed="true">Idle</button>
+          <button type="button" data-mode="listening" aria-pressed="false">Listen</button>
+          <button type="button" data-mode="thinking" aria-pressed="false">Think</button>
+          <button type="button" data-mode="speaking" aria-pressed="false">Speak</button>
+        </div>
+        <label><input id="motion" type="checkbox"> Reduce motion</label>
+      </section>
+      <section class="panel" aria-label="Scripted interaction">
+        <h2>Try a scripted exchange</h2>
+        <p class="fine">A synthetic example. Use the state buttons, or play a 12-second sequence. Speaking is a visual cue only.</p>
+        <div aria-live="polite" aria-atomic="true">
+          <span class="state" id="status">Idle</span>
+          <div class="script"><span class="eyebrow" id="speaker">Ready</span><p id="line">Choose a state or play the exchange.</p></div>
+        </div>
+        <div class="controls"><button class="primary" type="button" id="play">Play interaction</button><button type="button" id="reset">Reset</button></div>
+        <p class="fine">The hosted Elderwise demo integrates ElevenLabs voice, NVIDIA Nemotron through Nebius TokenFactory and optional Tavily public-information retrieval. This companion makes no calls to those services.</p>
+      </section>
+    </div>
+    <footer>
+      <p><a href="https://cga.elderwise.ai/voice-assessment-demo">Open the hosted Elderwise demo</a> · <a href="https://github.com/yamyr/elderwise-nebius-demo">Source and architecture</a></p>
+      <p class="fine">Partial public source. The full application and backend remain private. Draft assessment output requires clinician review; this illustration provides no clinical validation. Original companion code and illustration © 2026 Volodymyr Iermolaiev, MIT license.</p>
+    </footer>
+  </main>
+  <script>
+    const robot = document.querySelector('#robot');
+    const status = document.querySelector('#status');
+    const speaker = document.querySelector('#speaker');
+    const line = document.querySelector('#line');
+    const play = document.querySelector('#play');
+    const modes = [...document.querySelectorAll('[data-mode]')];
+    const examples = {
+      idle: ['Ready', 'Choose a state or play the exchange.'],
+      listening: ['Scripted participant', 'I enjoy taking a short walk in the morning.'],
+      thinking: ['Illustrated processing', 'A pause gives the companion time to prepare its next question. No model is running here.'],
+      speaking: ['Scripted companion', 'Thank you. What makes your morning walk enjoyable?']
+    };
+    let timers = [];
+    function cancelSequence() {
+      timers.forEach(clearTimeout);
+      timers = [];
+      play.disabled = false;
+      play.textContent = 'Play interaction';
+    }
+    function showState(state) {
+      robot.dataset.state = state;
+      robot.setAttribute('aria-label', 'Schematic robot: ' + state);
+      status.textContent = state[0].toUpperCase() + state.slice(1);
+      speaker.textContent = examples[state][0];
+      line.textContent = examples[state][1];
+      modes.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.mode === state)));
+    }
+    modes.forEach(button => button.addEventListener('click', () => {
+      cancelSequence();
+      showState(button.dataset.mode);
+    }));
+    play.addEventListener('click', () => {
+      cancelSequence();
+      play.disabled = true;
+      play.textContent = 'Playing scripted exchange…';
+      showState('listening');
+      timers.push(setTimeout(() => showState('thinking'), 4000));
+      timers.push(setTimeout(() => showState('speaking'), 7000));
+      timers.push(setTimeout(() => { cancelSequence(); showState('idle'); }, 12000));
+    });
+    document.querySelector('#reset').addEventListener('click', () => {
+      cancelSequence();
+      showState('idle');
+    });
+    document.querySelector('#motion').addEventListener('change', event => {
+      document.body.classList.toggle('reduce-motion', event.target.checked);
+    });
+  </script>
+</body>
+</html>
