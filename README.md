@@ -1,14 +1,24 @@
 # Elderwise · Nebius demo
 
-**DOCUMENTATION ONLY.** This repository contains an original project description and architecture diagram for the Elderwise Nebius hackathon demo. It does not contain a runnable application or the proprietary implementation. It does not satisfy a requirement to publish runnable source code.
+**PARTIAL PUBLIC COMPANION.** This repository contains a runnable, original browser interaction illustration, a project description and an architecture diagram for the Elderwise Nebius hackathon demo. It is not the full application's source code. The proprietary application and backend remain private. This limited companion may not satisfy the hackathon's runnable-source requirement.
 
 [Open the hosted demo](https://cga.elderwise.ai/voice-assessment-demo)
+
+## Run the public companion
+
+Download this repository and open `index.html` in a browser. No installation, build, API key or internet connection is needed for the companion itself. Alternatively, run `python3 -m http.server 8000` in the downloaded directory and open `http://localhost:8000`.
+
+Choose **Idle**, **Listen**, **Think** or **Speak** to explore visual cues. **Play interaction** runs a 12-second synthetic script. **Reset** cancels playback and returns to idle. Selecting any state also cancels playback. **Reduce motion** stops animations; the page also respects the operating system's reduced-motion preference.
+
+The robot is an original, simplified CSS illustration for the virtual Reachy Mini interaction concept. It is not a Reachy Mini model, SDK implementation or hardware simulation. No third-party robot assets are used. Listening and speaking are visual states only: there is no microphone capture or audio output. The script does not call ElevenLabs, Nebius, NVIDIA models or Tavily. Follow the hosted demo link to inspect the actual integration separately.
+
+## Hosted demo
 
 Elderwise explores a voice interface for comprehensive geriatric assessment, or CGA. The browser combines a virtual Reachy Mini avatar with an assessment UI. A synthetic, scripted demonstration shows a conversation progressing toward a draft for clinician review. It is a software demo, not a demonstration of a physical robot or evidence of clinical validation.
 
 ## Architecture
 
-The diagram describes the demo's integration roles at a conceptual level. It omits proprietary implementation details.
+The diagram describes the **hosted demo's** integration roles at a conceptual level. It omits proprietary implementation details. The local `index.html` companion implements only an original illustration of interaction states, not the service architecture below.
 
 ```mermaid
 flowchart TD
@@ -49,7 +59,9 @@ This documentation describes that provenance and correction workflow without pub
 
 ## Repository scope
 
-The public files were written for this documentation repository. No application source, private Git history, credentials, patient data, deployment configuration or third-party Reachy Mini assets are included. The hosted demo is separate from this repository. There are no installation or build instructions because these files are not a runnable implementation.
+The public files were written originally for this repository. `index.html` contains the entire runnable companion, including its HTML, CSS illustration and JavaScript state controls. No proprietary application source, private Git history, credentials, patient data, deployment configuration or third-party Reachy Mini assets are included. The hosted demo is separate from this repository. This is partial public source for a companion illustration, not publication of the complete Elderwise application.
+
+Additional repository and implementation details are available to the judges on request.
 
 ## License
 
